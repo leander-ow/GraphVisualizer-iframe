@@ -1,5 +1,5 @@
 * { box-sizing: border-box; }
-html, body, #app { width: 100%; height: 100%; margin: 0; font-family: Arial, sans-serif; }
+html, body, #app { width: 100%; height: 100%; margin: 0; font-family: Arial, sans-serif; background: #121212; color: #eee; }
 #app { display: flex; }
 #leftPane { flex: 4; position: relative; background: #202020; }
 #graphCanvas { width: 100%; height: 100%; display: block; }
@@ -10,16 +10,16 @@ html, body, #app { width: 100%; height: 100%; margin: 0; font-family: Arial, san
   border-radius: 6px; padding: 10px; font-family: monospace; font-size: 11px;
   white-space: pre;
 }
-#sidebar { flex: 1; min-width: 340px; max-width: 420px; padding: 12px; overflow: auto; background: #fff; }
-#search { width: 100%; padding: 8px; margin-bottom: 8px; }
-#selectedLabel { font-weight: bold; margin-bottom: 10px; }
+#sidebar { flex: 1; min-width: 340px; max-width: 420px; padding: 12px; overflow: auto; background: #181818; color: #eee; }
+#search { width: 100%; padding: 8px; margin-bottom: 8px; background: #252525; color: #eee; border: 1px solid #444; }
+#selectedLabel { font-weight: bold; margin-bottom: 10px; color: #fff; }
 .sectionHead { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.sectionHead h3 { font-size: 14px; margin: 10px 0 6px; }
-.list { list-style: none; margin: 0; padding: 0; border: 1px solid #ddd; min-height: 90px; max-height: 220px; overflow: auto; }
-.list li { padding: 6px 8px; border-bottom: 1px solid #eee; cursor: pointer; font-size: 13px; }
+.sectionHead h3 { font-size: 14px; margin: 10px 0 6px; color: #ddd; }
+.list { list-style: none; margin: 0; padding: 0; border: 1px solid #333; min-height: 90px; max-height: 220px; overflow: auto; background: #1f1f1f; }
+.list li { padding: 6px 8px; border-bottom: 1px solid #333; cursor: pointer; font-size: 13px; color: #ddd; }
 .list li:last-child { border-bottom: none; }
-.list li.active { background: #f0f6ff; }
-#relayoutBtn { margin-top: 10px; width: 100%; padding: 8px; }
+.list li.active { background: #233b55; color: #fff; }
+#relayoutBtn { margin-top: 10px; width: 100%; padding: 8px; background: #252525; color: #eee; border: 1px solid #444; }
 #busyOverlay {
   position: fixed; inset: 0; background: rgba(0,0,0,.55);
   color: #fff; display: flex; align-items: center; justify-content: center;
