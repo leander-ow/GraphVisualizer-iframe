@@ -39,7 +39,8 @@
             in
             with ps; [
               python-dotenv
-	      flask
+              gunicorn
+              flask
               requests
               zstandard
               pyqtgraph

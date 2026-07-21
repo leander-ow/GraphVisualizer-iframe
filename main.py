@@ -1,7 +1,7 @@
 from config import GRAPH_URL, TOKENS_URL, GRAPH_FILE, TOKENS_FILE, HOST, PORT
 from src.utils import download
 from src.loader import load_tokens, load_graph, compute_layout
-from src.server import run_server
+from src.server import create_app
 
 
 def main():
@@ -18,9 +18,7 @@ def main():
         graph,
     )
 
-    run_server(
-        host=HOST,
-        port=PORT,
+    return create_app(
         tokens=tokens,
         pos=pos,
         degree=degree,
@@ -33,5 +31,4 @@ def main():
     )
 
 
-if __name__ == "__main__":
-    main()
+app = main()

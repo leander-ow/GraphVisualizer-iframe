@@ -31,9 +31,7 @@ def build_initial_state(
     }
 
 
-def run_server(
-    host,
-    port,
+def create_app(
     tokens,
     pos,
     degree,
@@ -83,4 +81,4 @@ def run_server(
 
         return jsonify(payload)
 
-    app.run(host=host, port=port, debug=False)
+    return app
