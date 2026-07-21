@@ -11,7 +11,7 @@
 
   const state = {
     tokens: [], pos: [], degree: [], originalGraph: {}, filtered: [],
-    layout_duration: 0, layout_algorithm: 'drl', filter_limit: -1,
+    layout_duration: 0, layout_algorithm: 'drl', filter_limit: 500,
     context_count: 0, token_count: 0, graph_file_date: 'Unbekannt',
     sidebar_list_limit: 500, visible_limit: 300,
     selectedIndex: null, selectedEdge: null, selectedEdgeCategory: null,
@@ -32,12 +32,6 @@
     toggleC: document.getElementById('toggle-c'),
     toggleA: document.getElementById('toggle-a'),
     toggleB: document.getElementById('toggle-b'),
-    relayoutBtn: document.getElementById('relayoutBtn'),
-    relayoutDialog: document.getElementById('relayoutDialog'),
-    algorithmSelect: document.getElementById('algorithmSelect'),
-    filterLimitInput: document.getElementById('filterLimitInput'),
-    dialogOk: document.getElementById('dialogOk'),
-    busyOverlay: document.getElementById('busyOverlay'),
   };
 
   function resizeCanvas() {
@@ -278,9 +272,8 @@
   async function fetchStateFromServer() {
     const params = new URLSearchParams(location.search);
     const q = new URLSearchParams();
-    for (const key of ['token', 'algorithm', 'filter_limit']) {
-      if (params.has(key)) q.set(key, params.get(key));
-    }
+    if (params.has('token')) q.set('token', params.get('token'));
+
     const res = await fetch(`/api/state?${q.toString()}`);
     if (!res.ok) throw new Error('Failed to load state');
     const data = await res.json();
@@ -302,9 +295,6 @@
     edgeCategories.c.enabled = el.toggleC.checked;
     edgeCategories.a.enabled = el.toggleA.checked;
     edgeCategories.b.enabled = el.toggleB.checked;
-
-    el.algorithmSelect.value = state.layout_algorithm;
-    el.filterLimitInput.value = String(state.filter_limit);
 
     renderFilteredList();
 
@@ -364,47 +354,11 @@
     state.offsetY = -cy * state.zoom;
   }
 
-  function showBusy() { el.busyOverlay.hidden = false; }
-  function hideBusy() { el.busyOverlay.hidden = true; }
-
-  async function recomputeLayout(algorithm, filter_limit) {
-    showBusy();
-    try {
-      const res = await fetch('/api/recompute', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ algorithm, filter_limit }),
-      });
-      if (!res.ok) throw new Error('Recompute failed');
-      const data = await res.json();
-
-      state.tokens = data.tokens;
-      state.pos = data.pos;
-      state.degree = data.degree;
-      state.originalGraph = data.original_graph;
-      state.filtered = data.filtered;
-      state.layout_duration = data.layout_duration;
-      state.layout_algorithm = data.layout_algorithm;
-      state.filter_limit = data.filter_limit;
-      state.context_count = data.context_count;
-      state.token_count = data.token_count;
-      state.graph_file_date = data.graph_file_date;
-
-      renderFilteredList();
-      selectNode(null);
-      autoFit();
-      draw();
-      emit({ type: 'graph:layoutRecomputed', algorithm: state.layout_algorithm, filter_limit: state.filter_limit });
-    } finally {
-      hideBusy();
-    }
-  }
-
   function emit(payload) {
     window.parent?.postMessage(payload, '*');
   }
 
-  window.addEventListener('message', async (event) => {
+  window.addEventListener('message', (event) => {
     const msg = event.data || {};
     if (!msg.type) return;
 
@@ -416,10 +370,6 @@
           focusNode(idx);
         }
       }
-    } else if (msg.type === 'graph:recomputeLayout') {
-      const algorithm = msg.algorithm || state.layout_algorithm;
-      const filterLimit = Number.isFinite(msg.filter_limit) ? msg.filter_limit : state.filter_limit;
-      await recomputeLayout(algorithm, filterLimit);
     } else if (msg.type === 'graph:getState') {
       emit({
         type: 'graph:state',
@@ -445,18 +395,6 @@
       const i = state.tokens.indexOf(el.search.value);
       if (i >= 0) { selectNode(i); focusNode(i); }
     });
-
-    el.relayoutBtn.onclick = () => {
-      el.algorithmSelect.value = state.layout_algorithm;
-      el.filterLimitInput.value = String(state.filter_limit);
-      el.relayoutDialog.showModal();
-    };
-
-    el.dialogOk.onclick = async (e) => {
-      e.preventDefault();
-      el.relayoutDialog.close();
-      await recomputeLayout(el.algorithmSelect.value, parseInt(el.filterLimitInput.value, 10));
-    };
 
     el.canvas.addEventListener('click', (e) => {
       const idx = findNodeAt(e.clientX, e.clientY);

@@ -43,32 +43,8 @@
 
         <h3 id="filteredHeading">Filter deaktiviert</h3>
         <ul id="list-filtered" class="list"></ul>
-
-        <button id="relayoutBtn">Layout neu berechnen</button>
       </aside>
     </div>
-
-    <dialog id="relayoutDialog">
-      <form method="dialog" id="relayoutForm">
-        <label>
-          Algorithmus
-          <select id="algorithmSelect">
-            <option>drl</option><option>fr</option><option>kk</option><option>graphopt</option>
-            <option>lgl</option><option>mds</option><option>circle</option><option>grid</option><option>random</option>
-          </select>
-        </label>
-        <label>
-          Filter-Limit
-          <input id="filterLimitInput" type="number" value="-1" />
-        </label>
-        <menu>
-          <button value="cancel">Abbrechen</button>
-          <button value="default" id="dialogOk">OK</button>
-        </menu>
-      </form>
-    </dialog>
-
-    <div id="busyOverlay" hidden>Layout wird neu berechnet...</div>
 
     <script src="/app.js"></script>
   </body>
